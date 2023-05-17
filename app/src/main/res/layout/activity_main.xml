@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/etna"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Please enter name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etcell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Please enter cell no"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/bsubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="SUBMIT" />
+
+    <Button
+        android:id="@+id/bshow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SHOW DATA" />
+
+    <Button
+        android:id="@+id/bedit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="edit"
+        android:text="EDIT DATA " />
+
+    <Button
+        android:id="@+id/bdele"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="delete"
+        android:text="DELETE DATA" />
+</LinearLayout>
