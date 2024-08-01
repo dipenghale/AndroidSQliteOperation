@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ContactsDB {
@@ -60,22 +61,24 @@ public class ContactsDB {
         cv.put(Key_Cell, cell);
         return ourdatabase.insert(Database_Table, null, cv);
     }
-    public String returndata() {
+    public List<String> returndata() {
         String[] column = new String[] {
                 Key_RowId,
                 Key_Name,
                 Key_Cell
         };
         Cursor c = ourdatabase.rawQuery("SELECT * FROM "+Database_Table,null);
-        String resu = "";
+        //String resu = "";
         //int irowid = c.getInt(0);
-
+        List<Contact> contacts = new ArrayList<>();
         while (c.moveToNext()) {
-
-            resu = resu + c.getString(1) + ":" + c.getString(2) + "\n";
+            contacts.add(new Contact(c.getInt(0),c.getString(1),c.getString(2)));
+            //resu = resu + c.getString(1) + ":" + c.getString(2) + "\n";
         }
+        String[] contactNames = Contact.getContacts(contacts);
         //c.close();
-        return resu;
+        //return resu;
+        return Arrays.asList(contactNames);
     }
 
     public long deleteEnter(String rowId) {

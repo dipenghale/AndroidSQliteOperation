@@ -24,12 +24,11 @@ public class MainActivity extends AppCompatActivity {
         etname = findViewById(R.id.etna);
         etcell = findViewById(R.id.etcell);
         bshow = findViewById(R.id.bshow);
-        bshow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        bshow.setOnClickListener(v-> {
+
                 Intent intent = new Intent(MainActivity.this,Data.class);
                 startActivity(intent);
-            }
+
         });
 
     }
