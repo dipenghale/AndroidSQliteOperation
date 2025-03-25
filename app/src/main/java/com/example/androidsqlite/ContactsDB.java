@@ -3,96 +3,71 @@ package com.example.androidsqlite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class ContactsDB {
-    public static final String Key_RowId = "_id";
-    public static final String Key_Name = "person_name";
-    public static final String Key_Cell = "_cell";
-
-    private final String Database_Name = "ContactsDB"; //Database Name
-    private final String Database_Table = "ContactsTable";
-    private final int Database_Version = 1;
-
-    private DBHelper ourHelper;
-    private final Context ourContext;
-    private SQLiteDatabase ourdatabase;
+public class ContactsDB extends SQLiteOpenHelper {
+    private static final String DB_NAME = "contacts.db";
+    private static final int DB_VERSION = 1;
 
     public ContactsDB(Context context) {
-        ourContext = context;
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
 
-
-    private class DBHelper extends SQLiteOpenHelper {
-        public DBHelper(Context context) {
-            super(context, Database_Name, null, Database_Version);
-
-        }
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            String sqlcode = "CREATE TABLE ContactsTable(_id INTEGER PRIMARY KEY AUTOINCREMENT, person_name TEXT NOT NULL, _cell TEXT NOT NULL);";
-            db.execSQL(sqlcode);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-            db.execSQL("DROP TABLE IF EXISTS " + Database_Table);
-            onCreate(db);
-        }
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT)");
     }
-    public ContactsDB open() throws SQLException {
-        ourHelper = new DBHelper(ourContext);
-        ourdatabase = ourHelper.getWritableDatabase();
-        return this;
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS contacts");
+        onCreate(db);
     }
-    public void close() {
-        ourHelper.close();
-    }
-    public long creat(String name, String cell) {
+
+    public void insertContact(String name, String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(Key_Name, name);
-        cv.put(Key_Cell, cell);
-        return ourdatabase.insert(Database_Table, null, cv);
+        cv.put("name", name);
+        cv.put("phone", phone);
+        db.insert("contacts", null, cv);
     }
-    public List<String> returndata() {
-        String[] column = new String[] {
-                Key_RowId,
-                Key_Name,
-                Key_Cell
-        };
-        Cursor c = ourdatabase.rawQuery("SELECT * FROM "+Database_Table,null);
-        //String resu = "";
-        //int irowid = c.getInt(0);
+
+    public void updateContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("name", contact.getName());
+        cv.put("phone", contact.getPhone());
+        db.update("contacts", cv, "id=?", new String[]{String.valueOf(contact.getId())});
+    }
+
+    public void deleteContact(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("contacts", "id=?", new String[]{String.valueOf(id)});
+    }
+
+    public List<Contact> getAllContacts() {
         List<Contact> contacts = new ArrayList<>();
-        while (c.moveToNext()) {
-            contacts.add(new Contact(c.getInt(0),c.getString(1),c.getString(2)));
-            //resu = resu + c.getString(1) + ":" + c.getString(2) + "\n";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM contacts", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String name = cursor.getString(1);
+                String phone = cursor.getString(2);
+                contacts.add(new Contact(id, name, phone));
+            } while (cursor.moveToNext());
         }
-        String[] contactNames = Contact.getContacts(contacts);
-        //c.close();
-        //return resu;
-        return Arrays.asList(contactNames);
-    }
 
-    public long deleteEnter(String rowId) {
-        return ourdatabase.delete(Database_Table, Key_RowId + "=?", new String[] {
-                rowId
-        });
-    }
-
-    public long update(String rowId, String cell, String name) {
-        ContentValues cu = new ContentValues();
-        cu.put(Key_Name, name);
-        cu.put(Key_Cell, cell);
-        return ourdatabase.update(Database_Table, cu, Key_RowId + "=?", new String[] {
-                rowId
-        });
+        cursor.close();
+        return contacts;
     }
 }
+

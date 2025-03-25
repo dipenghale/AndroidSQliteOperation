@@ -3,34 +3,21 @@ package com.example.androidsqlite;
 import java.util.List;
 
 public class Contact {
-    private Integer id;
+    private int id;
     private String name;
-    private String cell;
+    private String phone;
 
-    // Constructor
-    public Contact(Integer id, String name, String cell) {
+    public Contact(int id, String name, String phone) {
+        this.id = id;
         this.name = name;
-        this.cell = cell;
+        this.phone = phone;
     }
 
-    // Getter for name
-    public String getName() {
-        return name;
-    }
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getPhone() { return phone; }
 
-    public String getCell() {
-        return cell;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-    // Method to return a string array from a list of Student objects
-    public static String[] getContacts(List<Contact> contacts) {
-        String[] names = new String[contacts.size()];
-        for (int i = 0; i < contacts.size(); i++) {
-            names[i] = contacts.get(i).getName();
-        }
-        return names;
-    }
+    public void setId(int id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setPhone(String phone) { this.phone = phone; }
 }
